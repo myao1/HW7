@@ -81,7 +81,7 @@ d3.csv("US_medals.csv", function(error, data) {
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Population");
+      .text("Number of Medals");
 
   var state = svg.selectAll(".state")
       .data(data)
