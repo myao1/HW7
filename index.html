@@ -1,149 +1,121 @@
 <!DOCTYPE html>
-<html lang="en">
+<meta charset="utf-8">
+<style>
 
+body {
+  font: 10px sans-serif;
+}
 
-    <head>
-        <meta charset="utf-8">
-        <title>U.S. Olympics Medals Breakdown</title>
-        <script type="text/javascript" src="d3/d3.js"></script>
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
 
-        <style>
+.bar {
+  fill: steelblue;
+}
 
-            .chart bronzerect {
-              fill: #cd7f32;
-            }
+.x.axis path {
+  display: none;
+}
 
-            .chart silverrect {
-              fill: #cccccc;
-            }
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
 
-            .chart goldrect{
-              fill: #ffd700;
-            }
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
 
-            .d3-tip {
-              line-height: 1;
-              font-weight: bold;
-              padding: 12px;
-              background: rgba(0,0,0,0.8);
-              color: #fff;
-              border-radius: 2px;
-            }
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
 
-            .d3-tip:after{
-              box-sizing: border-box;
-              display: inline;
-              font-size: 10px;
-              width: 100%;
-              line-height: 1;
-              color: rgba(0,0,0,0.8);
-              content: "\25BC";
-              position: absolute;
-              text-align: center;
-            }
+var y = d3.scale.linear()
+    .rangeRound([height, 0]);
 
-            }
-            .chart rect {
-              fill: steelblue;
-            }
+var color = d3.scale.ordinal()
+    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
-            .chart text {
-              fill: white;
-              font: 10px sans-serif;
-              text-anchor: middle;
-            }
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
 
-             text.xText{
-              fill: black;
-              font: 10px sans-serif;
-              text-anchor: middle;
-            }
-        </style>
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .tickFormat(d3.format(".2s"));
 
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    </head>
+d3.csv("US_medals.csv", function(error, data) {
+  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "Games"; }));
 
+  data.forEach(function(d) {
+    var y0 = 0;
+    d.ages = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
+    d.total = d.ages[d.ages.length - 1].y1;
+  });
 
-    <body>
+  data.sort(function(a, b) { return b.total - a.total; });
 
-        
-        <svg class="chart"></svg>
-        <script type="text/javascript"> //src = "d3/d3.js">
+  x.domain(data.map(function(d) { return d.Games; }));
+  y.domain([0, d3.max(data, function(d) { return d.Total; })]);
 
-            //Setting the size of our canvas
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
 
-            var width = 780;
-            var height = 460;
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Population");
 
+  var state = svg.selectAll(".state")
+      .data(data)
+    .enter().append("g")
+      .attr("class", "g")
+      .attr("transform", function(d) { return "translate(" + x(d.State) + ",0)"; });
 
-            ///Setting our x and y axes
+  state.selectAll("rect")
+      .data(function(d) { return d.ages; })
+    .enter().append("rect")
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.y1); })
+      .attr("height", function(d) { return y(d.y0) - y(d.y1); })
+      .style("fill", function(d) { return color(d.name); });
 
+  var legend = svg.selectAll(".legend")
+      .data(color.domain().slice().reverse())
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
-            var x = d3.scale.ordinal().rangeRoundBands([0,width], .1);
-            var y = d3.scale.linear().range([height,0]);           
+  legend.append("rect")
+      .attr("x", width - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", color);
 
+  legend.append("text")
+      .attr("x", width - 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(function(d) { return d; });
 
+});
 
-            //Creating our chart and grabbing attributes from ".chart" in header
-            
-            var chart = d3.select(".chart")
-              .attr("width", width)
-              .attr("height", height);
-
-
-            //Pulling data from .json file 
-            
-            d3.json("State-Example.json", function(error, data){
-
-
-
-                //Set our scale domains
-
-                x.domain(data.map(function(d) {return d.state}));
-                y.domain([0,d3.max(data, function(d) {return d.value;})]);
-                
-                var y_translate = 50;
-                //Grabbing data and binding it to the bars
-                
-                var bar = chart.selectAll("g")
-                  .data(data)
-                  .enter()
-                  .append("g")
-                  .attr("transform", function(d) {return "translate("+x(d.state)+",0)";});
-
-
-                //Logging data to the console so we can make sure the data is bound
-                
-                console.log(data);
-
-                //Generating rectangle SVG elements for our data
-                bar.append("rect")
-                  .attr("y", function(d) {return y(d.value);})
-                  .attr("height", function(d) {return height-y_translate-y(d.value);})
-                  .attr("width", x.rangeBand())
-                  .style("fill", function(d) {
-                    if(d.value > 30){
-                      return "#00CC33";
-                    }else{
-                      return "steelblue";
-                    }
-                  });
-
-
-
-                //Adding y labels to our bars
-                
-               
- 
-
-                //Adding x labels to our bars
-                
-
-
-
-            });
-            
-
-        </script>
-    </body>
-</html>
+</script>
