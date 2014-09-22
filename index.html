@@ -92,8 +92,9 @@ d3.csv("US_medals.csv", function(error, data) {
     d.medals = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
     d.total = d.medals[d.medals.length - 1].y1;
   });
-
-  data.sort(function(a, b) { return b.total - a.total; });
+	
+  //sorts from greatest number of medals to least
+  //data.sort(function(a, b) { return b.total - a.total; });
 
   x.domain(data.map(function(d) { return d.Games; }));
   y.domain([0, d3.max(data, function(d) { return d.total; })]);
