@@ -59,14 +59,14 @@ d3.csv("US_medals.csv", function(error, data) {
 
   data.forEach(function(d) {
     var y0 = 0;
-    d.ages = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
-    d.total = d.ages[d.ages.length - 1].y1;
+    d.medals = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
+    d.total = d.medals[d.medals.length - 1].y1;
   });
 
   data.sort(function(a, b) { return b.total - a.total; });
 
   x.domain(data.map(function(d) { return d.Games; }));
-  y.domain([0, d3.max(data, function(d) { return d.Total; })]);
+  y.domain([0, d3.max(data, function(d) { return d.total; })]);
 
   svg.append("g")
       .attr("class", "x axis")
@@ -90,7 +90,7 @@ d3.csv("US_medals.csv", function(error, data) {
       .attr("transform", function(d) { return "translate(" + x(d.State) + ",0)"; });
 
   state.selectAll("rect")
-      .data(function(d) { return d.ages; })
+      .data(function(d) { return d.medals; })
     .enter().append("rect")
       .attr("width", x.rangeBand())
       .attr("y", function(d) { return y(d.y1); })
