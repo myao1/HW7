@@ -114,11 +114,11 @@ d3.csv("US_medals.csv", function(error, data) {
       .style("text-anchor", "end")
       .text("Number of Medals");
 
-  var state = svg.selectAll(".state")
+  var state = svg.selectAll(".Games")
       .data(data)
     .enter().append("g")
       .attr("class", "g")
-      .attr("transform", function(d) { return "translate(" + x(d.State) + ",0)"; });
+      .attr("transform", function(d) { return "translate(" + x(d.Games) + ",0)"; });
 
   state.selectAll("rect")
       .data(function(d) { return d.medals; })
