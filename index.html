@@ -79,14 +79,14 @@ var yAxis = d3.svg.axis()
     .orient("left")
     .tickFormat(d3.format(".2s"));
 
-/**
-var tip - d3.tip()
+
+var tip = d3.tip()
     .attr('class', 'd3-tip')
     .offset([-10, 0])
     .html(function(d) {
-      return "<strong>Total medals:</strong> <span style='color:red'>" + d.Total + "</span>";
+      return "<strong>Total medals:</strong> <span style='color:blue'>" + d.Total + "</span>";
     });
-*/
+
 
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
