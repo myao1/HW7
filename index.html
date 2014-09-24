@@ -77,20 +77,17 @@ var yAxis = d3.svg.axis()
     .orient("left")
     .tickFormat(d3.format(".2s"));
 
-/**
-var tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([-10, 0])
-    .html(function(d) {
-      return "<strong>Total medals:</strong> <span style='color:blue'>" + d.total + "</span>\n<strong>Location:</strong> <span style='color:blue'>" + d.Location + "</span>";
-    });
-*/
+
+
+
 
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
 
 
 d3.csv("US_medals.csv", function(error, data) {
@@ -102,6 +99,14 @@ d3.csv("US_medals.csv", function(error, data) {
     d.total = d.medals[d.medals.length - 1].y1;
   });
 	
+  var tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function(data) {
+      return "<strong>Total medals:</strong> <span style='color:red'>" + data.total + "</span>\n<strong>Location:</strong> <span style='color:red'>" + data.location + "</span>";
+    });
+
+  svg.call(tip);
   //sorts from greatest number of medals to least
   //data.sort(function(a, b) { return b.total - a.total; });
 
@@ -136,8 +141,8 @@ d3.csv("US_medals.csv", function(error, data) {
       .attr("y", function(d) { return y(d.y1); })
       .attr("height", function(d) { return y(d.y0) - y(d.y1); })
       .style("fill", function(d) { return color(d.name); })
-      //.on('mouseover', tip.show)
-      //.on('mouseout', tip.hide)
+      .on('mouseover', tip.show)
+      .on('mouseout', tip.hide);
 
   var legend = svg.selectAll(".legend")
       .data(color.domain().slice().reverse())
