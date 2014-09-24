@@ -64,11 +64,8 @@ var x = d3.scale.ordinal()
 var y = d3.scale.linear()
     .rangeRound([height, 0]);
 
-// hex for bronze #cd7f32
-// hex for silver #cccccc
-// hex for gold #ffd700
 var color = d3.scale.ordinal()
-    .range(["#ffd700", "#cccccc", "#cd7f32", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
 var xAxis = d3.svg.axis()
     .scale(x)
