@@ -37,6 +37,8 @@ label {
 </style>
 <label><input type="checkbox"> Sort values</label>
 <script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="https://rawgit.com/Caged/d3-tip/master/index.js"></script>
+
 <script>
 
 var margin = {top: 20, right: 20, bottom: 30, left: 100},
@@ -72,6 +74,15 @@ d3.csv("StateData.csv", function(error, data) {
     d.Population = +d.Population;
   });
 
+  var tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function(data) {
+      return "<strong>Population:</strong> <span style='color:blacks'>" + d.Population + "</span>";
+    });
+
+  svg.call(tip);
+
   x.domain(data.map(function(d) { return d.Abbreviation; }));
   y.domain([0, d3.max(data, function(d) { return d.Population; })]);
 
@@ -97,7 +108,9 @@ d3.csv("StateData.csv", function(error, data) {
       .attr("x", function(d) { return x(d.Abbreviation); })
       .attr("width", x.rangeBand())
       .attr("y", function(d) { return y(d.Population); })
-      .attr("height", function(d) { return height - y(d.Population); });
+      .attr("height", function(d) { return height - y(d.Population); })
+      .on('mouseover', tip.show)
+      .on('mouseout', tip.hide);
 
   d3.select("input").on("change", change);
 
