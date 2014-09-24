@@ -100,7 +100,7 @@ d3.csv("StateData.csv", function(error, data) {
 
   var tip = d3.tip()
     .attr('class', 'd3-tip')
-    .offset([-10, 0])
+    .offset([-10, 10])
     .html(function(data) {
       return "<strong>Population:</strong> <span style='color:white'>" + "Insert pop here" + "</span>";
     });
