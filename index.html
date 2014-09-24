@@ -51,7 +51,6 @@ body {
 </style>
 <body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="http://labratrevenge.com/d3-tip/javascript/d3.tip.v0.6.3.js"></script>
 <script src="https://rawgit.com/Caged/d3-tip/master/index.js"></script>
 
 <script>
@@ -67,7 +66,7 @@ var y = d3.scale.linear()
     .rangeRound([height, 0]);
 
 var color = d3.scale.ordinal()
-    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+    .range(["#ffd700", "#cccccc", "#cd7f32", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
 var xAxis = d3.svg.axis()
     .scale(x)
@@ -93,7 +92,6 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-svg.call(tip);
 
 d3.csv("US_medals.csv", function(error, data) {
   color.domain(d3.keys(data[0]).filter(function(key) { if(key !== "Games" && key !== "Location" && key !== "Total" && key !== "Comments")return key; }));
@@ -137,9 +135,9 @@ d3.csv("US_medals.csv", function(error, data) {
       .attr("width", x.rangeBand())
       .attr("y", function(d) { return y(d.y1); })
       .attr("height", function(d) { return y(d.y0) - y(d.y1); })
-      .style("fill", function(d) { return color(d.name); });
-      .on('mouseover', tip.show)
-      .on('mouseout', tip.hide)
+      .style("fill", function(d) { return color(d.name); })
+      //.on('mouseover', tip.show)
+      //.on('mouseout', tip.hide)
 
   var legend = svg.selectAll(".legend")
       .data(color.domain().slice().reverse())
