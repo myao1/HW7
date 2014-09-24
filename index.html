@@ -51,7 +51,7 @@ body {
 </style>
 <body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="http://labratrevenge.com/d3-tip/javascript/d3.tip.v0.6.3.js"></script>
+<script src="https://raw.githubusercontent.com/Caged/d3-tip/master/index.js"></script>
 <script>
 
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
@@ -79,14 +79,14 @@ var yAxis = d3.svg.axis()
     .orient("left")
     .tickFormat(d3.format(".2s"));
 
-/**
+
 var tip = d3.tip()
     .attr('class', 'd3-tip')
     .offset([-10, 0])
     .html(function(d) {
       return "<strong>Total medals:</strong> <span style='color:blue'>" + d.total + "</span>\n<strong>Location:</strong> <span style='color:blue'>" + d.Location + "</span>";
     });
-*/
+
 
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -96,20 +96,19 @@ var svg = d3.select("body").append("svg")
 
 svg.call(tip);
 
-d3.csv("US_medals.csv", function(error, data) {
-  color.domain(d3.keys(data[0]).filter(function(key) { if(key !== "Games" && key !== "Location" && key !== "Total" && key !== "Comments")return key; }));
+d3.csv("StateData.csv", function(data) {
+  //color.domain(d3.keys(data[0]).filter(function(key) { if(key !== "Abbreviation" && key !== "State" && key !== "Population")return key; }));
 
   data.forEach(function(d) {
     var y0 = 0;
-    d.medals = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
-    d.total = d.medals[d.medals.length - 1].y1;
+    d.Population = +d.Population;
   });
 	
   //sorts from greatest number of medals to least
   //data.sort(function(a, b) { return b.total - a.total; });
 
-  x.domain(data.map(function(d) { return d.Games; }));
-  y.domain([0, d3.max(data, function(d) { return d.total; })]);
+  x.domain(data.map(function(d) { return d.Abbreviation; }));
+  y.domain([0, d3.max(data, function(d) { return d.Population; })]);
 
   svg.append("g")
       .attr("class", "x axis")
@@ -124,7 +123,7 @@ d3.csv("US_medals.csv", function(error, data) {
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Number of Medals");
+      .text("Population");
 
   var state = svg.selectAll(".Games")
       .data(data)
@@ -138,7 +137,7 @@ d3.csv("US_medals.csv", function(error, data) {
       .attr("width", x.rangeBand())
       .attr("y", function(d) { return y(d.y1); })
       .attr("height", function(d) { return y(d.y0) - y(d.y1); })
-      .style("fill", function(d) { return color(d.name); });
+      .style("fill", function(d) { return color(d.name); })
       .on('mouseover', tip.show)
       .on('mouseout', tip.hide)
 
