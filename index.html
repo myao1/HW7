@@ -134,6 +134,10 @@ d3.csv("US_medals.csv", function(error, data) {
     d.medals = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
     d.total = d.medals[d.medals.length - 1].y1;
   });
+
+  var stack = d3.layout.stack()
+    .offset("wiggle")
+    .values(fuction(d) { return d.total; });
 	
   //sorts from greatest number of medals to least
   //data.sort(function(a, b) { return b.total - a.total; });
