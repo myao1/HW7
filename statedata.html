@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<!--Yan Zhang and Chuan Yao-->
+<!--CS4460 Fall 2014-->
 <meta charset="utf-8">
 <style>
 
@@ -28,6 +30,7 @@ body {
   display: none;
 }
 
+/*tooltip code taken from http://bl.ocks.org/Caged/6476579*/
 .d3-tip {
   line-height: 1;
   font-weight: bold;
@@ -52,6 +55,7 @@ body {
   top: 100%;
   left: 0;
 }
+
 label {
   position: absolute;
   top: 10px;
@@ -70,7 +74,6 @@ label {
 <input type="range" id="filter" min="500000" max="40000000" step="100000"><span id="filter-value"></span></p>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="https://rawgit.com/Caged/d3-tip/master/index.js"></script>
-<script src="https://rawgit.com/turban/d3.slider/master/d3.slider.js"></script>
 <script>
 
 var margin = {top: 20, right: 20, bottom: 30, left: 100},
@@ -145,7 +148,6 @@ d3.csv("StateData.csv", function(error, data) {
       .on('mouseover', tip.show)
       .on('mouseout', tip.hide);
 
-  d3.select("input").on("change", change);
   d3.select("#filter").on("input", function() {
     update(+this.value);
   });
@@ -164,6 +166,9 @@ d3.csv("StateData.csv", function(error, data) {
     })
   }
 
+
+  // sorting code taken from http://bl.ocks.org/mbostock/3885705
+  d3.select("input").on("change", change);
   var sortTimeout = setTimeout(function() {
     d3.select("input").property("checked", true).each(change);
   }, 0);
