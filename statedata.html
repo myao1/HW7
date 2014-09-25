@@ -59,10 +59,12 @@ label {
 }
 
 </style>
-<label><input type="checkbox"> Sort values</label>
+<label><input type="checkbox">Sort values</label>
+<p style="display: inline-block; width: 240px; text-align: bottom">Filter
+<input type="range" id="filter" min="500000" max="40000000" step="100000"><span id="filter-value"></span></p>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="https://rawgit.com/Caged/d3-tip/master/index.js"></script>
-
+<script src="https://rawgit.com/turban/d3.slider/master/d3.slider.js"></script>
 <script>
 
 var margin = {top: 20, right: 20, bottom: 30, left: 100},
@@ -102,7 +104,7 @@ d3.csv("StateData.csv", function(error, data) {
     .attr('class', 'd3-tip')
     .offset([-10, -8])
     .html(function(data) {
-      return "<strong>Population:</strong> <span style='color:white'>" + data.Population + "</span>";
+      return "<strong>" + data.Abbreviation + " Population:</strong> <span style='color:white'>" + data.Population + "</span>";
     });
 
   svg.call(tip);
@@ -137,6 +139,17 @@ d3.csv("StateData.csv", function(error, data) {
       .on('mouseout', tip.hide);
 
   d3.select("input").on("change", change);
+  d3.select("#filter").on("input", function() {
+    update(+this.value);
+  });
+
+  function update(popAmount) {
+    d3.select("#filter-value").text(popAmount);
+    d3.select("#filter").property("value", popAmount);
+    d3.selectAll("rect")
+    .data(data)
+    .fill()
+  }
 
   var sortTimeout = setTimeout(function() {
     d3.select("input").property("checked", true).each(change);
