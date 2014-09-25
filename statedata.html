@@ -148,7 +148,13 @@ d3.csv("StateData.csv", function(error, data) {
     d3.select("#filter").property("value", popAmount);
     d3.selectAll("rect")
     .data(data)
-    .fill()
+    .style("fill", function(data, popAmount) {
+      if(data.Population >= popAmount){
+          return white;
+      }else{
+        return steelblue;
+      }
+    })
   }
 
   var sortTimeout = setTimeout(function() {
