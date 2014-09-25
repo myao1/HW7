@@ -58,8 +58,15 @@ label {
   right: 10px;
 }
 
+
+
 </style>
+
+<body>
+<p style = "font-size: 60px; margin-left: 30px;">State Population </p>
 <label><input type="checkbox"> Sort values</label>
+</body>
+
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="https://rawgit.com/Caged/d3-tip/master/index.js"></script>
 
@@ -100,7 +107,7 @@ d3.csv("StateData.csv", function(error, data) {
 
   var tip = d3.tip()
     .attr('class', 'd3-tip')
-    .offset([-10, -8])
+    .offset([-67, -8])
     .html(function(data) {
       return "<strong>Population:</strong> <span style='color:white'>" + data.Population + "</span>";
     });
@@ -113,7 +120,8 @@ d3.csv("StateData.csv", function(error, data) {
   svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
+	  .append("text")
+	  
 
   svg.append("g")
       .attr("class", "y axis")
