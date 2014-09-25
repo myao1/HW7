@@ -100,7 +100,7 @@ d3.csv("StateData.csv", function(error, data) {
 
   var tip = d3.tip()
     .attr('class', 'd3-tip')
-    .offset([-10, 10])
+    .offset([-10, -8])
     .html(function(data) {
       return "<strong>Population:</strong> <span style='color:white'>" + data.Population + "</span>";
     });
@@ -140,7 +140,7 @@ d3.csv("StateData.csv", function(error, data) {
 
   var sortTimeout = setTimeout(function() {
     d3.select("input").property("checked", true).each(change);
-  }, 2000);
+  }, 0);
 
   function change() {
     clearTimeout(sortTimeout);
