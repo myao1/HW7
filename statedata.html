@@ -20,7 +20,7 @@ body {
 }
 
 .bar {
-  fill: red;
+  fill: steelblue;
   fill-opacity: .9;
 }
 
@@ -157,10 +157,9 @@ d3.csv("StateData.csv", function(error, data) {
     d3.select("#filter").property("value", popAmount);
     d3.selectAll(".bar")
     .data(data)
-    .attr("opacity", function(d, popAmount) {
-      if(d.Population <= popAmount){
-        console.log(popAmount);
-        return 0;
+    .attr("opacity", function(d) {
+      if(d.Population >= popAmount){
+        return .2;
       }else{
         return .9;
       }
