@@ -50,6 +50,7 @@ body {
 
 </style>
 <body>
+<label><input type="checkbox"> Sort values</label>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="https://rawgit.com/Caged/d3-tip/master/index.js"></script>
 
@@ -103,7 +104,7 @@ d3.csv("US_medals.csv", function(error, data) {
     .attr('class', 'd3-tip')
     .offset([-10, 0])
     .html(function(data) {
-      return "<strong>Total medals:</strong> <span style='color:red'>" + data.total + "</span>\n<strong>Location:</strong> <span style='color:red'>" + data.location + "</span>";
+      return "<strong>Total medals:</strong> <span style='color:red'>" + d.total + "</span>\n<strong>Location:</strong> <span style='color:red'>" + d.location + "</span>";
     });
 
   svg.call(tip);
@@ -134,9 +135,10 @@ d3.csv("US_medals.csv", function(error, data) {
       .attr("class", "g")
       .attr("transform", function(d) { return "translate(" + x(d.Games) + ",0)"; });
 
-  state.selectAll("rect")
+  state.selectAll(".bar")
       .data(function(d) { return d.medals; })
     .enter().append("rect")
+      .attr("class", "bar")
       .attr("width", x.rangeBand())
       .attr("y", function(d) { return y(d.y1); })
       .attr("height", function(d) { return y(d.y0) - y(d.y1); })
@@ -162,6 +164,35 @@ d3.csv("US_medals.csv", function(error, data) {
       .attr("dy", ".35em")
       .style("text-anchor", "end")
       .text(function(d) { return d; });
+
+  d3.select("input").on("change", change);
+
+  var sortTimeout = setTimeout(function() {
+    d3.select("input").property("checked", true).each(change);
+  }, 2000);
+
+  function change() {
+    clearTimeout(sortTimeout);
+
+    // Copy-on-write since tweens are evaluated after a delay.
+    var x0 = x.domain(data.sort(this.checked
+        ? function(a, b) { return b.total - a.total; }
+        : function(a, b) { return d3.ascending(a.Games, b.Games); })
+        .map(function(d) { return d.Games; }))
+        .copy();
+
+    var transition = svg.transition().duration(750),
+        delay = function(d, i) { return i * 50; };
+
+    transition.selectAll("rect")
+        .delay(delay)
+        .attr("x", function(d) { return x0(d.Games); });
+
+    transition.select(".x.axis")
+        .call(xAxis)
+      .selectAll("g")
+        .delay(delay);
+  }
 
 });
 
